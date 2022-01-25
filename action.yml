@@ -40,5 +40,5 @@ runs:
         key: ${{ runner.os }}-poetry-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
     - name: Install dependencies
-      run: poetry install -E all
+      run: poetry install
       shell: bash
