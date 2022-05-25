@@ -10,31 +10,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Install poetry
+      run: pipx install poetry
+    - uses: actions/setup-python@v3
       with:
         python-version: ${{ inputs.python-version }}
-
-    - name: Install poetry
-      uses: Gr1N/setup-poetry@v7
-
-    - name: Cache Windows dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'Windows' }}
-      with:
-        path: ~/AppData/Local/pypoetry/Cache/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-    - name: Cache Linux dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'Linux' }}
-      with:
-        path: ~/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-    - name: Cache macOS dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'macOS' }}
-      with:
-        path: ~/Library/Caches/pypoetry/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        cache: 'poetry'
