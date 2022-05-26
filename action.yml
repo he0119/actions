@@ -16,10 +16,30 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install poetry
-      shell: bash
-      run: pipx install poetry
-    
-    - uses: actions/setup-python@v3
+      uses: Gr1N/setup-poetry@v7
+
+    - name: Get python version
+      run: |
+        python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
+        echo "PYTHON_VERSION=${python_version}" >> $GITHUB_ENV
+
+    - name: Cache Windows dependencies
+      uses: actions/cache@v2
+      if: ${{ runner.os == 'Windows' }}
       with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'poetry'
+        path: ~/AppData/Local/pypoetry/Cache/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Cache Linux dependencies
+      uses: actions/cache@v2
+      if: ${{ runner.os == 'Linux' }}
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Cache macOS dependencies
+      uses: actions/cache@v2
+      if: ${{ runner.os == 'macOS' }}
+      with:
+        path: ~/Library/Caches/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
