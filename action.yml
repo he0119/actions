@@ -19,6 +19,7 @@ runs:
       uses: Gr1N/setup-poetry@v7
 
     - name: Get python version
+      shell: bash
       run: |
         python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
         echo "PYTHON_VERSION=${python_version}" >> $GITHUB_ENV
