@@ -10,37 +10,19 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up Python
+    - id: python
       uses: actions/setup-python@v2
       with:
         python-version: ${{ inputs.python-version }}
+        architecture: "x64"
 
-    - name: Install poetry
-      uses: Gr1N/setup-poetry@v7
+    - uses: Gr1N/setup-poetry@v7
 
-    - name: Get python version
+    - id: poetry-cache
+      run: echo "::set-output name=dir::$(poetry config virtualenvs.path)"
       shell: bash
-      run: |
-        python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
-        echo "python_version_info=${python_version}" >> $GITHUB_ENV
 
-    - name: Cache Windows dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'Windows' }}
+    - uses: actions/cache@v2
       with:
-        path: ~/AppData/Local/pypoetry/Cache/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ env.python_version_info }}-${{ hashFiles('**/poetry.lock') }}
-
-    - name: Cache Linux dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'Linux' }}
-      with:
-        path: ~/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ env.python_version_info }}-${{ hashFiles('**/poetry.lock') }}
-
-    - name: Cache macOS dependencies
-      uses: actions/cache@v2
-      if: ${{ runner.os == 'macOS' }}
-      with:
-        path: ~/Library/Caches/pypoetry/virtualenvs
-        key: ${{ runner.os }}-poetry-${{ env.python_version_info }}-${{ hashFiles('**/poetry.lock') }}
+        path: ${{ steps.poetry-cache.outputs.dir }}
+        key: ${{ runner.os }}-poetry-${{ steps.python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
