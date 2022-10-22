@@ -19,7 +19,7 @@ runs:
     - uses: snok/install-poetry@v1
 
     - id: poetry-cache
-      run: echo "::set-output name=dir::$(poetry config virtualenvs.path)"
+      run: echo "dir=$(poetry config virtualenvs.path)" >> $GITHUB_OUTPUT
       shell: bash
 
     - uses: actions/cache@v3.0.11
