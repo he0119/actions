@@ -16,7 +16,7 @@ runs:
         python-version: ${{ inputs.python-version }}
         architecture: "x64"
 
-    - uses: Gr1N/setup-poetry@v7
+    - uses: Gr1N/setup-poetry@09236184f6c1ab47c0dc9c1001c7fe200cf2afb0
 
     - id: poetry-cache
       run: echo "dir=$(poetry config virtualenvs.path)" >> $GITHUB_OUTPUT
